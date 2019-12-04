@@ -217,7 +217,7 @@ $.ajax({
     }
 });	
 }
-  function build_modal (avain){ 
+  function build_modal (avain){ //rakennetaan modal parametrin perusteella
   var modal = document.getElementById("myModal");
     modal.style.display = "block";
 document.getElementById('modal_b').innerHTML = "";
@@ -272,16 +272,14 @@ document.getElementById('modal_b').innerHTML = "";
 
 		$("#form2").append('<tr><td><input type="submit" value="Poista" onclick="delete_as('+id+')"></td><td><input type="submit" value="Päivitä" onclick="updateAS()"></td></tr>');
 		
-		$("#modal_b").append('</form></tbody></table>');
-		
-
+		$("#modal_b").append('</form></tbody></table>');		
 		document.getElementById("idAsiakas").readOnly = true;
 
 
 	
 });
 }
-if (avain=="new"){
+if (avain=="new"){//jos uusi asikas
 
   var jqxhr =$.get("http://localhost:3002/Asiakas/all", function(data, status){
 
@@ -302,41 +300,40 @@ if (avain=="new"){
 			yritys(myObj[y]);
 			}
 			else if (y=="käytössä"){
+				
 		$("#form2").append('<tr><td>Aktiivinen</td><td><select name="käytössä" id="käytössä"></td></tr>');		
 		$('#käytössä').append($('<option/>', { 
-        value: 1,
-        text : "Kyllä" 
-		    }
-			));
-
+       		value: 1,
+       		text : "Kyllä" 
+		}					
+		));
+				
 		$('#käytössä').append($('<option/>', { 
-        value: 0,
-        text : "Ei"  
-		    }
-			));
+       		 value: 0,
+        	text : "Ei"  
+		}		
+		));	
 		$("#form2").append('<br>');		
-
 			}			
-			else
-				$("#form2").append("<tr><td>"+y+'</td><td><input type="text" name="'+y+'" id="'+y+'" required></td></tr>');
-
+			
+				else			
+					$("#form2").append("<tr><td>"+y+'</td><td><input type="text" name="'+y+'" id="'+y+'" required></td></tr>');
+			
 			}
 		
 		$("#form2").append('<input type="submit" value="Lisää henkilö" onclick="NewAS()">');
 		$("#modal_b").append('</form></tbody></table></nav>');
 		document.getElementById("idAsiakas").hidden = true;
 
-$("#modalsec").append('<article id="modal_o"><span class="close" id="exitbtn">&times;</span><form target="huijausikkuna" id="new_info"><table id="table3"> <thead><tr><th></th><th></th></tr></thead><tbody id="body">');
+	$("#modalsec").append('<article id="modal_o"><span class="close" id="exitbtn">&times;</span><form target="huijausikkuna" id="new_info"><table id="table3"> <thead><tr><th></th><th></th></tr></thead><tbody id="body">');
 	$("#body").append('<tr><td>Sähköposti</td><td><input type="text" name="sposti" ></td></tr>');
 	$("#body").append('<tr><td><input type="submit" value="Lisää sähköposti" onclick="NewEM()"><td></tr>');
 		
-//$("#body").append('<tr><form target="huijausikkuna" id="new_addrs"></form>');
 	$("#body").append('<td>Katu</td><td><input type="text" name="Katu" ></td></tr>');
 	$("#body").append('<tr><td>Postinumero</td><td><input type="text" name="Postinumero" ></td></tr>');
 	$("#body").append('<tr><td>Paikkakunta</td><td><input type="text" name="Paikkakunta" ></td></tr>');
 	$("#body").append('<tr><td><input type="submit" value="Lisää osoite" onclick="NewAD()"><td></tr>');
 
-//$("#body").append('<form target="huijausikkuna" id="new_nmbr"></form>');
 	$("#body").append('<tr><td>Pnumero</td><td><input type="text" name="Pnumero" ></td></tr>');
 	$("#body").append('<tr><td>Ynumero</td><td><input type="text" name="Ynumero"></td></tr>');
 	$("#body").append('<tr><td><input type="submit" value="Lisää numero" onclick="NewNM()"><td></tr>');	
@@ -344,12 +341,9 @@ $("#modalsec").append('<article id="modal_o"><span class="close" id="exitbtn">&t
 	$("#body").append('</article></section></tbody></table>');
 
 	var exitbtn = document.getElementById("exitbtn");
-exitbtn.onclick = function() {
-  modal.style.display = "none";
+	exitbtn.onclick = function() {
+ 	modal.style.display = "none";
 }
-
-
-
 });
 
 
@@ -358,14 +352,13 @@ $('select').each(function() {
 });
 
 }
-if (avain=="ls"){
+if (avain=="ls"){//jos tehdään uusi lasku
 $("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
 	var exitbtn = document.getElementById("exitbtn");
 	exitbtn.onclick = function() {
-  modal.style.display = "none";
+ 	 modal.style.display = "none";
 }
-
- $("#modal_b").append('<form target="huijausikkuna" id="form" onsubmit="return checkform(this)"><table id="table3">');
+$("#modal_b").append('<form target="huijausikkuna" id="form"><table id="table3">');
 $("#table3").append('<tr><td>Työnkuva </td><td><input type="text" name="Työnkuva" id="Työnkuva" value="" required ></td></tr>');
 $("#table3").append('<tr><td>Määrä</td><td> <input type="text" name="Määrä" id="Määrä" value="" required ></td></tr>');
 $("#table3").append('<tr><td>ALV </td><td><input type="text" name="ALV" id="ALV" value="" required ></td></tr>');
@@ -378,19 +371,16 @@ $("#table3").append('<tr><td>Kenelle</td><td><select name="Asiakas_idAsiakas" id
     for (x in data){
     	let myObj = data[x];				
 		$('#Kenelle').append($('<option/>', { 
-        value: myObj.idAsiakas,
-        text : myObj.Etunimi+" "+ myObj.Sukunimi 
-		    }
-			));
-	}
+      		value: myObj.idAsiakas,
+        	text : myObj.Etunimi+" "+ myObj.Sukunimi 		    
+		}						      
+		));	
+    }
 	$("#table3").append('<tr><td><input type="submit" value="Lisää"></td></tr></table>');
-
 });
-
-
 }
 
-if (avain=="yr"){
+if (avain=="yr"){//jos tehdään uusi yritys
 $("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
 	var exitbtn = document.getElementById("exitbtn");
 	exitbtn.onclick = function() {
@@ -400,20 +390,14 @@ $("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
  $("#modal_b").append('<form target="huijausikkuna" id="form"><table id="form2">');
 $("#form2").append('<tr><td>Ytunnus </td><td><input type="text" name="Ytunnus" id="Ytunnus" value="" required ></td></tr>');
 $("#form2").append('<tr><td>Nimi</td><td> <input type="text" name="Nimi" id="Nimi" value="" required ></td></tr>');
-			osoite();
-			numerot();
-			email();
+osoite();
+numerot();
+email();
 $("#form2").append('<tr><td><input type="submit" value="Lisää" onclick="NewYR()"></td></tr></table>');
-
-
-
-
-
 } 
-
 }//build modal
 
-function numerot(value){
+function numerot(value){//tuo dropdownin numeroista
 $("#form2").append('<tr><td>Numero </td><td><select name="Numerot_idNumerot" id="Numerot_idNumerot"></td></tr>');
 
   var jqxhr =$.get("http://localhost:3002/Numerot", function(data, status){ 
@@ -423,46 +407,43 @@ $("#form2").append('<tr><td>Numero </td><td><select name="Numerot_idNumerot" id=
 			value: myObj.idNumerot,
 			text : "Puh.nro: "+myObj.Pnumero+" Y.nro: "+ myObj.Ynumero 
 		    }
-			));  
+		));  
 	}
 	document.getElementById('Numerot_idNumerot').selectedIndex = value-1;
-
 });
 }
-function osoite(value){
+function osoite(value){//tuo dropdownin osoitteista
 $("#form2").append('<tr><td>Osoite</td><td><select name="Osoite_idOsoite" id="Osoite_idOsoite"></td></tr>');
 
   var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
     for (x in data){
     	let myObj = data[x];
 		$('#Osoite_idOsoite').append($('<option/>', { 
-        value: myObj.idOsoite,
-        text : myObj.Katu+" "+ myObj.Postinumero+" "+ myObj.Paikkakunta 
-		    }
+      		  value: myObj.idOsoite,
+      		  text : myObj.Katu+" "+ myObj.Postinumero+" "+ myObj.Paikkakunta 
+		   }
 		));  
 	}
 	document.getElementById('Osoite_idOsoite').selectedIndex = value-1;
-
 });
 }
-function email(value){
+function email(value){//tuo dropdownin emaileista
 $("#form2").append('<tr><td>Email</td><td> <select name="Email_EmailID" id="Email_EmailID"></td></tr>');
 
   var jqxhr =$.get("http://localhost:3002/Email", function(data, status){ 
     for (x in data){
     	let myObj = data[x];
 		$('#Email_EmailID').append($('<option/>', { 
-        value: myObj.EmailID,
-        text : myObj.sposti 
-		    }
+       		 value: myObj.EmailID,
+       		 text : myObj.sposti 
+		  }
 		));  
 	}
 	document.getElementById('Email_EmailID').selectedIndex = value-1;
-
 });
 }
 
-function yritys(value){
+function yritys(value){//tuo dropdownin yrityksistä
 $("#form2").append('<tr><td>Yritys</td><td> <select name="Ytunnus" id="Ytunnus"></td></tr>');
 
 		$('#Ytunnus').append($('<option/>', { 
@@ -508,7 +489,7 @@ $.ajax({
 }
 
 
-function updateAS(){
+function updateAS(){//päivitä asiakas
 var str = $( "#ASform" ).serialize();
 $.ajax({
     url: 'http://localhost:3002/asiakas/update?'+str,
@@ -523,7 +504,7 @@ $.ajax({
 }
 
 
-function NewAS(){
+function NewAS(){//uusi asiakas
 var str = $( "#ASform" ).serialize();
 $.ajax({
     url: 'http://localhost:3002/asiakas?'+str,
@@ -536,7 +517,7 @@ $.ajax({
     }
 });	
 }
-function NewEM(){
+function NewEM(){//uusi email
 var sposti = $('#new_info').find('input[name=sposti]').serialize(); 
 if(sposti!='sposti='){
 $.ajax({
@@ -565,7 +546,7 @@ i=0;
 alert("Täytä sähköpostikenttä")
 }
 
-function NewAD(){
+function NewAD(){//uusi asiakas
 var os = $('#new_info').find('input[name=Katu]').serialize(); 
 
 if(os!='Katu='){
@@ -587,24 +568,23 @@ i=0;
 		));  
 	}
 	document.getElementById('Osoite_idOsoite').selectedIndex = i-1;
-
-});
+  });    
     }
 });	
 }else
 alert("Täytä osoite kentät!")
 }//NewAD
 
-function NewYR(){
+function NewYR(){//uusiyritys
 $.ajax({
     url: 'http://localhost:3002/Yritykset?'+($( "#form" ).serialize()),
     type: 'POST',
     success: function(data) {
 	console.log("Tietojen päivitys onnistui")
 	$('#Osoite_idOsoite').empty();
-  var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
-	  document.getElementById("myModal").style.display = "none";
-});
+  	var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
+	 document.getElementById("myModal").style.display = "none";  
+	});    
     }
 });	
 
@@ -629,30 +609,16 @@ i=0;
 			value: myObj.idNumerot,
 			text : "Puh.nro: "+myObj.Pnumero+" Y.nro: "+ myObj.Ynumero 
 		    }
-			));  
+		));  
 	}
 	document.getElementById('Numerot_idNumerot').selectedIndex = i-1;
-
 });
-    }
+}
 });	
 }else
 alert("Täytä Numero kenttä!")
 }//NewNM
 
-function checkform(form) {
-    var inputs = form.getElementsByTagName('input');
-    for (var i = 0; i < inputs.length; i++) {
-        if(inputs[i].hasAttribute("required")){
-            if(inputs[i].value == ""){
-                alert("Täytä kaikki kentät");
-                return false;
-            }
-        }
-    }
-	uusilasku();
-    return true;
-}
 
   </script>
   </body>
