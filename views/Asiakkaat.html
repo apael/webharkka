@@ -1,0 +1,35 @@
+
+<html>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<table>
+      <ul>
+
+  {{#each as}}
+  
+    <li><a  class="asc" value={{this.idAsiakas}} href="javascript:void(0)" onclick="build_modal({{this.idAsiakas}})"> {{this.Etunimi}} <br> {{this.Sukunimi}} </a>
+<input type="checkbox" value={{this.käytössä}} class="cbas" onclick="paivita_as({{this.idAsiakas}},{{this.käytössä}})"> Aktiivinen<br></td>
+	</li>
+	<br>
+    {{/each}}
+	    </ul>
+<a href="javascript:void(0)"; id="myBtn" class="linkbox">Lisää Henkilö </a>&nbsp;&nbsp; <a href="javascript:void(0)"; id="myBtn2" class="linkbox"> Lisää Lasku </a>&nbsp;&nbsp; <a href="javascript:void(0)"; id="myBtn3" class="linkbox"> Lisää Yritys </a>
+
+	</table>
+
+</html>
+<script>
+
+
+$( document ).ready(function() {  
+
+  $('.cbas').each(function(e){
+    if($(this).val() == 1){
+        $(this).attr("checked", "checked");
+    }
+});
+});
+
+  </script>

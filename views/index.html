@@ -1,0 +1,661 @@
+ <html lang="en">
+
+<title>Example</title>
+  <meta charset="utf-8">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.linkbox{
+ border:1px solid black;  
+     display: inline-block;
+	     padding: 1em;
+}
+
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+  background-color: #666;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+}
+
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 30%;
+  background: #ccc;
+  padding: 20px;
+      height: 100%;
+
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+      height: 100%;
+
+}
+
+/* Clear floats after the columns */
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #777;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+ /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  height: 330px; /* Full height */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+ </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
+<body>
+	<header>
+		<h2>Mahtisovellus</h2>
+	</header>
+
+	<section>
+		<nav id="ruutu2"> 
+		</nav>
+		<article id="ruutu">  
+		</article>
+	</section>
+	
+	<footer>
+		<p>Made by Mikko</p>
+	</footer>
+
+	<div id="myModal" class="modal">
+		<div class="modal-content" id="content">
+			<div id="modal_b"></div>
+		</div>
+	</div>
+  <iframe name="huijausikkuna" style="display:none;"></iframe>
+<script>
+$( document ).ready(function() {
+  $("#ruutu2").load("http://localhost:3002/Asiakkaat", function() {
+  
+ var btn = document.getElementById("myBtn");//henkilöbutton
+	btn.onclick = function() {
+	build_modal ("new");
+}
+
+var btn = document.getElementById("myBtn2"); //laskubutton
+	btn.onclick = function() {
+	build_modal ("ls");
+}
+
+var btn = document.getElementById("myBtn3"); //yritysbutton
+	btn.onclick = function() {
+	build_modal ("yr");
+}
+
+var modal = document.getElementById("myModal");
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+} 
+  });
+  
+  $("#ruutu").load("http://localhost:3002/KaikkiLaskut", function() {
+  var jqxhr =$.get("http://localhost:3002/Asiakas/all", function(data, status){ 
+    for (x in data){
+    	let myObj = data[x];			 		 
+		if(myObj.käytössä==0){
+		  $('.asd').each(function(e){
+		if($(this).attr('value') == myObj.Etunimi){
+		$(this).remove();
+		}
+    });	
+	}}
+});
+});
+  
+  
+  $('.cbas').each(function(e){
+    if($(this).val() == 1){
+        $(this).attr("checked", "checked");
+    }
+});
+
+    $('#laskutaulu').DataTable( {
+        "pagingType": "full_numbers"
+    });
+  });//onready func
+  
+function paivita_as(id,arvo){
+$.ajax({
+    url: 'http://localhost:3002/Asiakas/update/'+id +"?arvo="+(1-arvo),
+    type: 'PUT',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui");
+	 location.reload(); 
+    }
+});	
+}
+
+function delete_as(id){
+$.ajax({
+    url: 'http://localhost:3002/Asiakas/'+id,
+    type: 'DELETE',
+    success: function(data) {
+	console.log("Tietojen poisto onnistui");
+	 location.reload(); 
+    }
+});	
+}
+  function build_modal (avain){ 
+  var modal = document.getElementById("myModal");
+    modal.style.display = "block";
+document.getElementById('modal_b').innerHTML = "";
+
+  if(typeof(avain)=="number"){
+  $("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
+	var exitbtn = document.getElementById("exitbtn");
+	exitbtn.onclick = function() {
+  modal.style.display = "none";
+}
+  
+  var jqxhr =$.get("http://localhost:3002/Asiakas/"+avain, function(data, status){
+  	$("#modal_b").append('<form target="huijausikkuna" id="ASform"><table id="form2"> <thead><tr><th></th><th></th></tr></thead><tbody>');
+	for (x in data){
+		i = 0;			 
+    	let myObj = data[x];
+			for (y in myObj){
+			if (y=="Numerot_idNumerot"){
+			numerot(myObj[y]);
+			}
+			else if (y=="Osoite_idOsoite"){
+			osoite(myObj[y]);
+			}
+			else if (y=="Email_EmailID"){
+			email(myObj[y]);
+			}
+			else if (y=="Yritykset_Ytunnus"){
+			yritys(myObj[y]);
+			}
+			else if (y=="käytössä"){
+		$("#form2").append('<tr><td>Aktiivinen</td><td><select name="käytössä" id="käytössä"></td></tr>');		
+		$('#käytössä').append($('<option/>', { 
+        value: 1,
+        text : "Kyllä" 
+		    }
+			));
+
+		$('#käytössä').append($('<option/>', { 
+        value: 0,
+        text : "Ei"  
+		    }
+			));
+		$("#form2").append('<br>');		
+
+			}			
+			else
+				$("#form2").append("<tr><td>"+y+'</td><td><input type="text" name="'+y+'" id="'+y+'" value="'+myObj[y]+'"></td></tr>');
+
+			}
+		}
+				var id =(document.getElementById("idAsiakas").value);
+
+		$("#form2").append('<tr><td><input type="submit" value="Poista" onclick="delete_as('+id+')"></td><td><input type="submit" value="Päivitä" onclick="updateAS()"></td></tr>');
+		
+		$("#modal_b").append('</form></tbody></table>');
+		
+
+		document.getElementById("idAsiakas").readOnly = true;
+
+
+	
+});
+}
+if (avain=="new"){
+
+  var jqxhr =$.get("http://localhost:3002/Asiakas/all", function(data, status){
+
+  	$("#modal_b").append('	<section id="modalsec"><nav><form target="huijausikkuna" id="ASform"><table id="form2"> <thead><tr><th></th><th></th></tr></thead><tbody>');
+		i = 0;			 
+    	let myObj = data[0];
+			for (y in myObj){
+			if (y=="Numerot_idNumerot"){
+			numerot(myObj[y]);
+			}
+			else if (y=="Osoite_idOsoite"){
+			osoite(myObj[y]);
+			}
+			else if (y=="Email_EmailID"){
+			email(myObj[y]);
+			}
+			else if (y=="Yritykset_Ytunnus"){
+			yritys(myObj[y]);
+			}
+			else if (y=="käytössä"){
+		$("#form2").append('<tr><td>Aktiivinen</td><td><select name="käytössä" id="käytössä"></td></tr>');		
+		$('#käytössä').append($('<option/>', { 
+        value: 1,
+        text : "Kyllä" 
+		    }
+			));
+
+		$('#käytössä').append($('<option/>', { 
+        value: 0,
+        text : "Ei"  
+		    }
+			));
+		$("#form2").append('<br>');		
+
+			}			
+			else
+				$("#form2").append("<tr><td>"+y+'</td><td><input type="text" name="'+y+'" id="'+y+'" required></td></tr>');
+
+			}
+		
+		$("#form2").append('<input type="submit" value="Lisää henkilö" onclick="NewAS()">');
+		$("#modal_b").append('</form></tbody></table></nav>');
+		document.getElementById("idAsiakas").hidden = true;
+
+$("#modalsec").append('<article id="modal_o"><span class="close" id="exitbtn">&times;</span><form target="huijausikkuna" id="new_info"><table id="table3"> <thead><tr><th></th><th></th></tr></thead><tbody id="body">');
+	$("#body").append('<tr><td>Sähköposti</td><td><input type="text" name="sposti" ></td></tr>');
+	$("#body").append('<tr><td><input type="submit" value="Lisää sähköposti" onclick="NewEM()"><td></tr>');
+		
+//$("#body").append('<tr><form target="huijausikkuna" id="new_addrs"></form>');
+	$("#body").append('<td>Katu</td><td><input type="text" name="Katu" ></td></tr>');
+	$("#body").append('<tr><td>Postinumero</td><td><input type="text" name="Postinumero" ></td></tr>');
+	$("#body").append('<tr><td>Paikkakunta</td><td><input type="text" name="Paikkakunta" ></td></tr>');
+	$("#body").append('<tr><td><input type="submit" value="Lisää osoite" onclick="NewAD()"><td></tr>');
+
+//$("#body").append('<form target="huijausikkuna" id="new_nmbr"></form>');
+	$("#body").append('<tr><td>Pnumero</td><td><input type="text" name="Pnumero" ></td></tr>');
+	$("#body").append('<tr><td>Ynumero</td><td><input type="text" name="Ynumero"></td></tr>');
+	$("#body").append('<tr><td><input type="submit" value="Lisää numero" onclick="NewNM()"><td></tr>');	
+	
+	$("#body").append('</article></section></tbody></table>');
+
+	var exitbtn = document.getElementById("exitbtn");
+exitbtn.onclick = function() {
+  modal.style.display = "none";
+}
+
+
+
+});
+
+
+$('select').each(function() {
+    $(this).selectedIndex = 0;
+});
+
+}
+if (avain=="ls"){
+$("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
+	var exitbtn = document.getElementById("exitbtn");
+	exitbtn.onclick = function() {
+  modal.style.display = "none";
+}
+
+ $("#modal_b").append('<form target="huijausikkuna" id="form" onsubmit="return checkform(this)"><table id="table3">');
+$("#table3").append('<tr><td>Työnkuva </td><td><input type="text" name="Työnkuva" id="Työnkuva" value="" required ></td></tr>');
+$("#table3").append('<tr><td>Määrä</td><td> <input type="text" name="Määrä" id="Määrä" value="" required ></td></tr>');
+$("#table3").append('<tr><td>ALV </td><td><input type="text" name="ALV" id="ALV" value="" required ></td></tr>');
+$("#table3").append('<tr><td>Hinta </td><td><input type="text" name="Hinta" id="Hinta" value="" required ></td></tr>');
+$("#table3").append('<tr><td>Viitenro </td><td><input type="text" name="Viitenro" id="Viitenro" value="" required></td></tr>');
+$("#table3").append('<tr><td>Kenelle</td><td><select name="Asiakas_idAsiakas" id="Kenelle"></td></tr>');
+
+  var jqxhr =$.get("http://localhost:3002/Asiakas/all", function(data, status){ 
+  
+    for (x in data){
+    	let myObj = data[x];				
+		$('#Kenelle').append($('<option/>', { 
+        value: myObj.idAsiakas,
+        text : myObj.Etunimi+" "+ myObj.Sukunimi 
+		    }
+			));
+	}
+	$("#table3").append('<tr><td><input type="submit" value="Lisää"></td></tr></table>');
+
+});
+
+
+}
+
+if (avain=="yr"){
+$("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
+	var exitbtn = document.getElementById("exitbtn");
+	exitbtn.onclick = function() {
+  modal.style.display = "none";
+}
+
+ $("#modal_b").append('<form target="huijausikkuna" id="form"><table id="form2">');
+$("#form2").append('<tr><td>Ytunnus </td><td><input type="text" name="Ytunnus" id="Ytunnus" value="" required ></td></tr>');
+$("#form2").append('<tr><td>Nimi</td><td> <input type="text" name="Nimi" id="Nimi" value="" required ></td></tr>');
+			osoite();
+			numerot();
+			email();
+$("#form2").append('<tr><td><input type="submit" value="Lisää" onclick="NewYR()"></td></tr></table>');
+
+
+
+
+
+} 
+
+}//build modal
+
+function numerot(value){
+$("#form2").append('<tr><td>Numero </td><td><select name="Numerot_idNumerot" id="Numerot_idNumerot"></td></tr>');
+
+  var jqxhr =$.get("http://localhost:3002/Numerot", function(data, status){ 
+    for (x in data){
+    	let myObj = data[x];
+		$('#Numerot_idNumerot').append($('<option/>', { 
+			value: myObj.idNumerot,
+			text : "Puh.nro: "+myObj.Pnumero+" Y.nro: "+ myObj.Ynumero 
+		    }
+			));  
+	}
+	document.getElementById('Numerot_idNumerot').selectedIndex = value-1;
+
+});
+}
+function osoite(value){
+$("#form2").append('<tr><td>Osoite</td><td><select name="Osoite_idOsoite" id="Osoite_idOsoite"></td></tr>');
+
+  var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
+    for (x in data){
+    	let myObj = data[x];
+		$('#Osoite_idOsoite').append($('<option/>', { 
+        value: myObj.idOsoite,
+        text : myObj.Katu+" "+ myObj.Postinumero+" "+ myObj.Paikkakunta 
+		    }
+		));  
+	}
+	document.getElementById('Osoite_idOsoite').selectedIndex = value-1;
+
+});
+}
+function email(value){
+$("#form2").append('<tr><td>Email</td><td> <select name="Email_EmailID" id="Email_EmailID"></td></tr>');
+
+  var jqxhr =$.get("http://localhost:3002/Email", function(data, status){ 
+    for (x in data){
+    	let myObj = data[x];
+		$('#Email_EmailID').append($('<option/>', { 
+        value: myObj.EmailID,
+        text : myObj.sposti 
+		    }
+		));  
+	}
+	document.getElementById('Email_EmailID').selectedIndex = value-1;
+
+});
+}
+
+function yritys(value){
+$("#form2").append('<tr><td>Yritys</td><td> <select name="Ytunnus" id="Ytunnus"></td></tr>');
+
+		$('#Ytunnus').append($('<option/>', { 
+        value: 'NULL',
+        text : "Ei yitystä" 
+		    }
+		)); 
+		
+  var jqxhr =$.get("http://localhost:3002/Yritykset", function(data, status){ 
+    for (x in data){
+    	let myObj = data[x];
+		$('#Ytunnus').append($('<option/>', { 
+        value: myObj.Ytunnus,
+        text : myObj.Nimi 
+		    }
+		));  
+	}
+	$("#Ytunnus").val(value);
+	if(value==null){
+	document.getElementById('Ytunnus').selectedIndex = 0;
+	}
+
+});
+}
+
+function uusilasku(){
+var today = new Date();   
+var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+ today.setDate((today.getDate() + 20));
+ var future = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+var str = $( "#form" ).serialize();
+$.ajax({
+    url: 'http://localhost:3002/Laskut?'+str+"&Maksettu=0&Toimitettu="+date+"&Eräpäivä="+(future),
+    type: 'POST',
+    success: function(data) {
+	console.log("Uusi lasku tehty")
+	  document.getElementById("myModal").style.display = "none";
+	 location.reload(); 
+
+    }
+});
+}
+
+
+function updateAS(){
+var str = $( "#ASform" ).serialize();
+$.ajax({
+    url: 'http://localhost:3002/asiakas/update?'+str,
+    type: 'PUT',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	  document.getElementById("myModal").style.display = "none";
+	 location.reload(); 
+
+    }
+});	
+}
+
+
+function NewAS(){
+var str = $( "#ASform" ).serialize();
+$.ajax({
+    url: 'http://localhost:3002/asiakas?'+str,
+    type: 'POST',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	  document.getElementById("myModal").style.display = "none";
+	 location.reload(); 
+
+    }
+});	
+}
+function NewEM(){
+var sposti = $('#new_info').find('input[name=sposti]').serialize(); 
+if(sposti!='sposti='){
+$.ajax({
+    url: 'http://localhost:3002/Email?'+sposti,
+    type: 'POST',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	$('#Email_EmailID').empty();
+  var jqxhr =$.get("http://localhost:3002/Email", function(data, status){
+i=0;  
+    for (x in data){
+	i++;
+    	let myObj = data[x];
+		$('#Email_EmailID').append($('<option/>', { 
+        value: myObj.EmailID,
+        text : myObj.sposti 
+		    }
+		));  
+	}
+	alert(i);
+	document.getElementById('Email_EmailID').selectedIndex = i-1;
+
+});
+    }
+});	
+}else
+alert("Täytä sähköpostikenttä")
+}
+
+function NewAD(){
+var os = $('#new_info').find('input[name=Katu]').serialize(); 
+
+if(os!='Katu='){
+$.ajax({
+    url: 'http://localhost:3002/Osoitteet?'+($( "#new_info" ).serialize()),
+    type: 'POST',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	$('#Osoite_idOsoite').empty();
+  var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
+i=0;  
+    for (x in data){
+	i++;
+    	let myObj = data[x];
+		$('#Osoite_idOsoite').append($('<option/>', { 
+        value: myObj.idOsoite,
+        text : myObj.Katu+" "+ myObj.Postinumero+" "+ myObj.Paikkakunta 
+		    }
+		));  
+	}
+	document.getElementById('Osoite_idOsoite').selectedIndex = i-1;
+
+});
+    }
+});	
+}else
+alert("Täytä osoite kentät!")
+}//NewAD
+
+function NewYR(){
+$.ajax({
+    url: 'http://localhost:3002/Yritykset?'+($( "#form" ).serialize()),
+    type: 'POST',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	$('#Osoite_idOsoite').empty();
+  var jqxhr =$.get("http://localhost:3002/Osoitteet", function(data, status){ 
+	  document.getElementById("myModal").style.display = "none";
+});
+    }
+});	
+
+}//NewAD
+
+function NewNM(){
+var nro = $('#new_info').find('input[name=Pnumero]').serialize(); 
+
+if(nro!='Pnumero='){
+$.ajax({
+    url: 'http://localhost:3002/Numerot?'+($( "#new_info" ).serialize()),
+    type: 'POST',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	$('#Numerot_idNumerot').empty();
+  var jqxhr =$.get("http://localhost:3002/Numerot", function(data, status){ 
+i=0;  
+    for (x in data){
+	i++;
+    	let myObj = data[x];
+		$('#Numerot_idNumerot').append($('<option/>', { 
+			value: myObj.idNumerot,
+			text : "Puh.nro: "+myObj.Pnumero+" Y.nro: "+ myObj.Ynumero 
+		    }
+			));  
+	}
+	document.getElementById('Numerot_idNumerot').selectedIndex = i-1;
+
+});
+    }
+});	
+}else
+alert("Täytä Numero kenttä!")
+}//NewNM
+
+function checkform(form) {
+    var inputs = form.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        if(inputs[i].hasAttribute("required")){
+            if(inputs[i].value == ""){
+                alert("Täytä kaikki kentät");
+                return false;
+            }
+        }
+    }
+	uusilasku();
+    return true;
+}
+
+  </script>
+  </body>
+
+  </html>

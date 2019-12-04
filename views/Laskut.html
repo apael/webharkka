@@ -1,0 +1,71 @@
+
+<html>
+
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<table id="laskutaulu">
+    <thead>
+
+    <tr>
+        <th>Työnkuva</th>
+        <th>Määrä</th>
+        <th>ALV</th>
+		<th>Hinta</th>
+        <th>Viitenro</th>
+        <th>Toimitettu</th>
+		<th>Eräpäivä</th>
+        <th>Kenelle</th>
+        <th>Maksettu</th>
+    </tr>
+	    </thead>
+    <tbody>
+  {{#each laskut}}
+    <tr value={{this.Kenelle}} class="asd">
+        <td>{{this.Työnkuva}}</td>
+        <td>{{this.Määrä}}</td>
+        <td>{{this.ALV}}</td>
+        <td>{{this.Hinta}}</td>
+        <td>{{this.Viitenro}}</td>		
+        <td>{{this.Toimitettu}}</td>	
+        <td>{{this.Eräpäivä}}</td>		
+        <td>{{this.Kenelle}}</td>		
+        <td><input type="checkbox" value={{this.Maksettu}} class="laskut" onclick="paivita_ls({{this.LaskuID}},{{this.Maksettu}})"> <br></td>
+
+    </tr>
+    {{/each}}
+	    </tbody>
+
+	</table>
+
+</html>
+
+<script>
+
+$( document ).ready(function() {
+$('.laskut').each(function(e){
+    if($(this).val() == 1){
+        $(this).attr("checked", "checked");
+    }
+});
+
+   $('#laskutaulu').dataTable( {
+  "pagingType": "full_numbers"
+} );
+});
+
+
+function paivita_ls(id,arvo){
+$.ajax({
+    url: 'http://localhost:3002/Laskut/update/'+id +"?arvo="+(1-arvo),
+    type: 'PUT',
+    success: function(data) {
+	console.log("Tietojen päivitys onnistui")
+	 location.reload(); 
+    }
+});	
+}
+</script>
