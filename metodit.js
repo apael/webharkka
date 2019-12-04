@@ -8,7 +8,7 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-  password : 'ruutti',
+  password : '****',
   database : 'laskutustietokanta',
    port     : '3307'
 
@@ -224,13 +224,13 @@ params.Ynumero="";
  },//createNumerot
 	
 createAsiakas: function (req, res) {  
-	console.log("Body = " + JSON.stringify(req.body));
 	let params = req.query;	
-	if(params.Ytunnus==undefined){
-	params.Ytunnus=null;
-	}else{
-	params.Ytunnus=("'"+params.Ytunnus+"'");
-	}
+	
+	if(params.Ytunnus==""){
+		params.Ytunnus=null;
+	}else
+	params.Ytunnus="'"+params.Ytunnus+"'";
+
 
 	
 	let sql = ("INSERT INTO asiakas (Etunimi,Sukunimi,käytössä,Numerot_idNumerot,Yritykset_Ytunnus,Osoite_idOsoite,Email_EmailID) VALUES ('"+params.Etunimi+"','" +params.Sukunimi+"','"+ params.käytössä+"','"+ params.Numerot_idNumerot+"',"+ params.Ytunnus+",'"+ params.Osoite_idOsoite+"','"+ params.Email_EmailID+"')");	
@@ -373,13 +373,15 @@ UpdateLasku: function (req, res) {
 updateAsiakas: function (req, res) {  
 	console.log("update asiakas");
 	let params = req.query;
-					console.log(params);
 					
-	if(params.Yritykset_Ytunnus==undefined){
-		params.Yritykset_Ytunnus=null;
-	}
+	if(params.Ytunnus==""){
+		params.Ytunnus=null;
+	}else
+	params.Ytunnus="'"+params.Ytunnus+"'";
 
-	let sql = ("UPDATE ASIAKAS SET Etunimi ='"+params.Etunimi+"',Sukunimi='" +params.Sukunimi+"',käytössä='"+ params.käytössä+"',Yritykset_Ytunnus="+ params.Yritykset_Ytunnus+",Numerot_idNumerot='"+ params.Numerot_idNumerot+"',Osoite_idOsoite='"+ params.Osoite_idOsoite+"',Email_EmailID='"+ params.Email_EmailID+"' where idAsiakas = '"+params.idAsiakas +"'");
+					console.log(params.Ytunnus);
+
+	let sql = ("UPDATE ASIAKAS SET Etunimi ='"+params.Etunimi+"',Sukunimi='" +params.Sukunimi+"',käytössä='"+ params.käytössä+"',Yritykset_Ytunnus="+ params.Ytunnus+",Numerot_idNumerot='"+ params.Numerot_idNumerot+"',Osoite_idOsoite='"+ params.Osoite_idOsoite+"',Email_EmailID='"+ params.Email_EmailID+"' where idAsiakas = '"+params.idAsiakas +"'");
 				console.log(sql);
 
       connection.query(sql, function(error, results, fields){	  
