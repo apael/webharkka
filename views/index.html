@@ -273,10 +273,7 @@ document.getElementById('modal_b').innerHTML = "";
 		$("#form2").append('<tr><td><input type="submit" value="Poista" onclick="delete_as('+id+')"></td><td><input type="submit" value="Päivitä" onclick="updateAS()"></td></tr>');
 		
 		$("#modal_b").append('</form></tbody></table>');		
-		document.getElementById("idAsiakas").readOnly = true;
-
-
-	
+		document.getElementById("idAsiakas").readOnly = true;	
 });
 }
 if (avain=="new"){//jos uusi asikas
@@ -358,7 +355,7 @@ $("#modal_b").append('<span class="close" id="exitbtn">&times;</span>');
 	exitbtn.onclick = function() {
  	 modal.style.display = "none";
 }
-$("#modal_b").append('<form target="huijausikkuna" id="form"><table id="table3">');
+$("#modal_b").append('<form target="huijausikkuna" id="form" onsubmit="return checkform(this)"><table id="table3">');
 $("#table3").append('<tr><td>Työnkuva </td><td><input type="text" name="Työnkuva" id="Työnkuva" value="" required ></td></tr>');
 $("#table3").append('<tr><td>Määrä</td><td> <input type="text" name="Määrä" id="Määrä" value="" required ></td></tr>');
 $("#table3").append('<tr><td>ALV </td><td><input type="text" name="ALV" id="ALV" value="" required ></td></tr>');
@@ -618,7 +615,19 @@ i=0;
 }else
 alert("Täytä Numero kenttä!")
 }//NewNM
-
+function checkform(form) {//jos selain ei tue required atribuuttia
+    var inputs = form.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        if(inputs[i].hasAttribute("required")){
+            if(inputs[i].value == ""){
+                alert("Täytä kaikki kentät");
+                return false;
+            }
+        }
+    }
+	uusilasku();
+    return true;
+}
 
   </script>
   </body>
